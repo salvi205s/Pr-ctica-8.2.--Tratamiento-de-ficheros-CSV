@@ -33,12 +33,14 @@ public class AlumnadoCSV {
         this.idFichero = idFichero;
     }
 
+    //metodo que devuelve una lista de alumnos que leeremos en el fichero que le pasaremos al constructor
     public ArrayList<Alumnado> getAll() {
 
         ArrayList<Alumnado> listaAlumnos = new ArrayList<>();
-        int cont = 0;
-        int edad = 0;
-        LocalDate fechanacimiento;
+        int cont = 0; //contador que sirve para descartar la primera linea
+        int edad = 0; //guarda el casteo de la edad
+        LocalDate fechanacimiento; //guarda el casteo de la fecha
+
         // Fichero a leer
         String idFichero = this.idFichero;
 
@@ -52,7 +54,7 @@ public class AlumnadoCSV {
         // Estructura try-with-resources. Permite cerrar los recursos una vez finalizadas
         // las operaciones con el archivo
         try (
-                Scanner datosFichero = new Scanner(new File(idFichero ), "utf-8")) {
+                Scanner datosFichero = new Scanner(new File(idFichero), "utf-8")) {
 
             // Mientras haya líneas por leer
             while (datosFichero.hasNextLine()) {
@@ -68,22 +70,25 @@ public class AlumnadoCSV {
                     //en algunos campos de la edad, se cuela la unidad, y da error NumberFormatException
                     //si eso ocurre pondremos la edad a cero, para que se sepa del error
                     try {
+                        //parseamos la edad y si da error, pondra la edad por defecto
                         edad = Integer.parseInt(tokens[7]);
                     } catch (NumberFormatException nfe) {
                         edad = 0;
                     }
-                    
-                    //llamamos a la clase DateTimeFormatter, para pasar la fecha de String a localDate
+
+                    //llamamos a la clase DateTimeFormatter, para formatear la fecha
                     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/MM/yyyy");
 
                     //en algunos campos de fecha, esta la localidad, y da error de DateTimeException
                     //la fecha por defecto sera 1/1/1, para que se sepa que esta mal
                     try {
+                        //parseamos la fecha y si da error, pondra la fecha por defecto
                         fechanacimiento = LocalDate.parse(tokens[4], formatter);
                     } catch (DateTimeException dfe) {
                         fechanacimiento = LocalDate.of(1, 1, 1);
                     }
 
+                    //guardamos los alumno del fichero en la lista de alumnos, con los datos parseados
                     listaAlumnos.add(new Alumnado(tokens[0],
                             tokens[1],
                             tokens[2],
